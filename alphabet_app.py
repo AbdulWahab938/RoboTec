@@ -7,16 +7,43 @@ import random
 class AlphabetApp:
     def __init__(self, master):
         self.master = master
-        self.alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        self.sentences = [
+            "A for Apple",
+            "B for Ball",
+            "C for Cat",
+            "D for Dog",
+            "E for Elephant",
+            "F for Fish",
+            "G for Goat",
+            "H for Horse",
+            "I for Ice cream",
+            "J for Jug",
+            "K for Kite",
+            "L for Lion",
+            "M for Monkey",
+            "N for Nest",
+            "O for Orange",
+            "P for Parrot",
+            "Q for Queen",
+            "R for Rabbit",
+            "S for Sun",
+            "T for Tiger",
+            "U for Umbrella",
+            "V for Violin",
+            "W for Watch",
+            "X for Xylophone",
+            "Y for Yogurt",
+            "Z for Zebra"
+        ]
         self.index = 0
         self.chocolates = 0
-        self.badges = [0] * len(self.alphabet)  # Initialize badges for each alphabet
+        self.badges = [0] * len(self.sentences)  # Initialize badges for each sentence
         self.attempted_once = False  # Flag to track if the kid has attempted once
         
-        self.alphabet_label = tk.Label(master, text=self.alphabet[self.index], font=('Arial', 36))
-        self.alphabet_label.pack(expand=True, fill=tk.BOTH)
+        self.sentence_label = tk.Label(master, text=self.sentences[self.index], font=('Arial', 20))
+        self.sentence_label.pack(expand=True, fill=tk.BOTH)
         
-        self.message_label = tk.Label(master, text="Please say the alphabet: A", font=('Arial', 14))
+        self.message_label = tk.Label(master, text="Please say the sentence: A for Apple", font=('Arial', 14))
         self.message_label.pack(expand=True, fill=tk.BOTH)
         
         self.processed_info_label = tk.Label(master, text="", font=('Arial', 12))
@@ -35,11 +62,11 @@ class AlphabetApp:
         self.engine = pyttsx3.init()
         self.recognizer = sr.Recognizer()
         
-        self.master.bind('<Button-1>', self.next_alphabet)
+        self.master.bind('<Button-1>', self.next_sentence)
     
-    def next_alphabet(self, event):
-        current_alphabet = self.alphabet[self.index]
-        self.engine.say(f"Please say the alphabet {current_alphabet}")
+    def next_sentence(self, event):
+        current_sentence = self.sentences[self.index]
+        self.engine.say(f"Please say the sentence: {current_sentence}")
         self.engine.runAndWait()
         
         with sr.Microphone() as source:
@@ -55,18 +82,18 @@ class AlphabetApp:
             self.processed_info_label.config(text=f"Processed Info is : {user_input}")
             self.master.update()
 
-            # Check if the user input contains the current alphabet
+            # Check if the user input matches the current sentence
             user_input = user_input.upper()
-            if current_alphabet in user_input:
+            if current_sentence.upper() == user_input:
                 self.engine.say("Hurray! Great Job, You have achieved a chocolate.")
                 self.engine.runAndWait()
                 self.chocolates += 1
-                self.badges[self.index] += 1  # Increment badge count for the current alphabet
+                self.badges[self.index] += 1  # Increment badge count for the current sentence
                 if self.badges[self.index] % 3 == 0:  # Check if three badges have been earned
                     self.engine.say("Congratulations! You earned a chocolate for completing three badges.")
                     self.engine.runAndWait()
                     self.chocolates += 1
-                self.index = (self.index + 1) % len(self.alphabet)
+                self.index = (self.index + 1) % len(self.sentences)
                 self.attempted_once = False  # Reset the attempt flag
                 self.update_emoji("✅")  # Display a checkmark emoji
                 self.master.after(2000, self.reset_emoji)  # Reset emoji after 2 seconds
@@ -84,10 +111,10 @@ class AlphabetApp:
                 self.update_emoji("❌")  # Display a cross mark emoji
                 self.master.after(2000, self.reset_emoji)  # Reset emoji after 2 seconds
             
-            # Update the alphabet label and prompt for the next alphabet
-            next_alphabet = self.alphabet[self.index]
-            self.alphabet_label.config(text=next_alphabet)
-            self.message_label.config(text=f"Please say the alphabet: {next_alphabet}")
+            # Update the sentence label and prompt for the next sentence
+            next_sentence = self.sentences[self.index]
+            self.sentence_label.config(text=next_sentence)
+            self.message_label.config(text=f"Please say the sentence: {next_sentence}")
             
             # Update the chocolates label with the new count
             self.chocolates_label.config(text=f"Chocolates: {self.chocolates} 🍫")
@@ -108,7 +135,8 @@ class AlphabetApp:
         self.emoji_label.config(text="")
         
     def show_success_gif(self):
-        success_gif_path = r"C:\Users\chand\Downloads\lol.gif"
+        # Change the path here
+        success_gif_path = r"C:\Users\premk\Downloads\lol.gif" 
         success_gif = Image.open(success_gif_path)
         success_gif = success_gif.resize((150, 150))
         self.success_gif_tk = ImageTk.PhotoImage(success_gif)  # Keep a reference to the image
@@ -123,8 +151,8 @@ class AlphabetApp:
         
 def main():
     root = tk.Tk()
-    root.title("Alphabet Display")
-    root.geometry("400x450")  # Increased height to accommodate chocolates label
+    root.title("Sentence Display")
+    root.geometry("400x500")  # Increased height to accommodate chocolates label
     
     app = AlphabetApp(root)
     
